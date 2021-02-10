@@ -1,10 +1,12 @@
 package hw;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class MultiplierMatrix {
     final private int[][] matrixFirst;
     final private int[][] matrixSecond;
     private final int[][] multipliedMatrix;
-    private int position = 0;
+    private final AtomicInteger position = new AtomicInteger(0);
 
     public MultiplierMatrix(int[][] matrixFirst, int[][] matrixSecond) {
         if((matrixCheck(matrixFirst, matrixSecond.length))) {
@@ -15,13 +17,9 @@ public class MultiplierMatrix {
         this.multipliedMatrix = new int[matrixFirst.length][matrixSecond[0].length];
     }
 
-    synchronized private int getPosition(){
-        return (position++);
-    }
-
     public void multiplyMatrix(){
         int currentPosition;
-        while ((currentPosition = getPosition()) < (matrixFirst.length * matrixSecond[0].length)){
+        while ((currentPosition = position.getAndIncrement()) < (matrixFirst.length * matrixSecond[0].length)){
             for (int k = 0; k < matrixFirst[0].length; k++) {
                 multipliedMatrix [currentPosition / multipliedMatrix[0].length][currentPosition % multipliedMatrix[0].length] += matrixFirst[currentPosition/multipliedMatrix[0].length][k] * matrixSecond[k][currentPosition % multipliedMatrix[0].length];
             }
